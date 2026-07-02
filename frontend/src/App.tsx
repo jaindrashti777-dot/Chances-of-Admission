@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import Layout from "./components/layout/Layout"
-import Home from "./pages/Home"
-import PredictionForm from "./pages/PredictionForm"
-import Results from "./pages/Results"
+import Layout from "./layout/Layout"
+import Home from "./features/home/Home"
+import PredictionForm from "./features/prediction/PredictionForm"
+import Results from "./features/results/Results"
 
 const router = createBrowserRouter([
   {
