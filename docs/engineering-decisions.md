@@ -1,32 +1,97 @@
 # Engineering Decisions & Trade-Offs
 
-This document outlines the core architectural and technology choices made during the development of Chances of Admission, focusing on *why* specific tools were chosen and their trade-offs.
+This document outlines the core architectural and technology choices made during the development of Chances of Admission. It details *why* specific tools were chosen, what alternatives were considered, and the inherent trade-offs of those decisions.
 
-## Backend Framework
+## 1. Backend Framework
 
-### Why FastAPI?
-- **Speed & Asynchrony:** Our prediction endpoints involve loading a serialized ML model into memory and doing numerical processing. FastAPI's native async capabilities ensure the server remains highly concurrent without blocking the event loop on network I/O.
-- **Pydantic Validation:** Strict validation of user data (ranks, quotas, categories) is critical for our model. Pydantic guarantees that bad inputs never reach the ML inference layer.
-- **Auto-Documentation:** Built-in OpenAPI swagger docs reduce the friction between frontend development and backend updates.
+**Decision:**
+Use FastAPI.
 
-### Why not Django or Flask?
-- **Django:** Too "batteries-included." We don't need Django's built-in auth, admin panels, or monolithic ORM. The API needs to be lightweight and stateless.
-- **Flask:** Lacks native async support and requires third-party plugins for type validation and documentation, whereas FastAPI provides these out of the box.
+**Alternatives:**
+Flask, Django.
 
-## Database
+**Reason:**
+Automatic OpenAPI documentation (Swagger UI) significantly reduces API communication friction. Pydantic provides strict type validation for the complex prediction schemas. Native async support ensures the server remains highly concurrent without blocking the event loop on network I/O.
 
-### Why PostgreSQL?
-- **Relational Integrity:** The historical cutoffs data is strictly tabular and relational (Colleges → Branches → Cutoffs → Categories). A SQL database is the perfect fit.
-- **Performance:** Complex queries to filter "Safe, Target, Dream" colleges based on closing ranks are highly optimized in Postgres.
+**Trade-off:**
+Smaller ecosystem than Django (no built-in admin panel or monolithic ORM), requiring more manual wiring of SQLAlchemy and Alembic.
 
-## Machine Learning
+---
 
-### Why XGBoost?
-- **Tabular Data Mastery:** XGBoost significantly outperforms deep learning approaches (like Neural Networks) on structured, tabular datasets like historical closing ranks.
-- **Interpretability:** XGBoost natively supports SHAP (SHapley Additive exPlanations), allowing us to explain *exactly* why a prediction was made to the user.
+## 2. Database
 
-## Frontend Architecture
+**Decision:**
+Use PostgreSQL.
 
-### Why React & Vite?
-- **React:** The frontend relies on dynamic, state-driven interfaces (interactive forms predicting live data, dynamic SVG charts for probabilities). React's component model fits this perfectly.
-- **Vite:** Replaces Create React App (CRA) or Webpack due to fundamentally faster Hot Module Replacement (HMR) and native ES modules during development. It builds significantly faster and has a much leaner footprint.
+**Alternatives:**
+MongoDB, MySQL, SQLite.
+
+**Reason:**
+The historical JoSAA cutoffs data is strictly tabular and highly relational (Colleges → Branches → Cutoffs → Categories). PostgreSQL is the industry standard for robust relational integrity and handles complex `JOIN` queries across multiple dimension tables highly efficiently.
+
+**Trade-off:**
+Requires rigid schema definitions and migrations (Alembic) compared to the flexibility of NoSQL databases like MongoDB. Slower to prototype with initially.
+
+---
+
+## 3. Machine Learning Model
+
+**Decision:**
+Use XGBoost Regressor.
+
+**Alternatives:**
+Linear Regression, Random Forest, Deep Neural Networks.
+
+**Reason:**
+XGBoost significantly outperforms deep learning approaches and standard Random Forests on structured, tabular datasets like historical closing ranks. It handles complex, non-linear interactions between categories, quotas, and college tiers exceptionally well. It also natively supports SHAP (SHapley Additive exPlanations) for model interpretability.
+
+**Trade-off:**
+More susceptible to overfitting than simpler linear models if hyperparameters (`max_depth`, `learning_rate`) are not rigorously tuned. Training takes longer than Random Forest.
+
+---
+
+## 4. Frontend Framework
+
+**Decision:**
+Use React with Vite.
+
+**Alternatives:**
+Next.js, Vue.js, Create React App (CRA).
+
+**Reason:**
+The frontend relies heavily on dynamic, state-driven interfaces (interactive forms, dynamic SVG charts). React's component model fits this perfectly. Vite was chosen over CRA for fundamentally faster Hot Module Replacement (HMR) and a leaner build footprint.
+
+**Trade-off:**
+React is a library, not a framework, requiring third-party libraries for routing (React Router) and data fetching (TanStack Query). Next.js would have provided Server-Side Rendering (SSR), but SSR is unnecessary for this highly interactive, behind-the-form dashboard.
+
+---
+
+## 5. Deployment
+
+**Decision:**
+Containerized backend (Docker + Render) and static frontend (Vercel).
+
+**Alternatives:**
+Monolith deployment on AWS EC2, Heroku.
+
+**Reason:**
+Vercel provides edge caching and instantaneous CI/CD for the React frontend out of the box. Dockerizing the FastAPI backend ensures the environment (Python 3.12, scikit-learn, joblib) is exactly the same in production as on the developer's machine, preventing "it works on my machine" ML dependency hell.
+
+**Trade-off:**
+Operating a distributed system (Vercel frontend calling a Render backend) introduces Cross-Origin Resource Sharing (CORS) complexity and potential network latency between the two cloud providers.
+
+---
+
+## 6. Recommendation Logic
+
+**Decision:**
+SQL-based heuristic for College Recommendations (Safe/Target/Dream).
+
+**Alternatives:**
+Running batch ML inference across all 3000+ college/branch combinations in real-time.
+
+**Reason:**
+Passing 3000+ permutations through the XGBoost model during a single web request would cause a massive latency bottleneck (seconds instead of milliseconds). By using the PostgreSQL database to quickly query and categorize colleges based on the previous year's cutoffs ± variance, we maintain <50ms response times.
+
+**Trade-off:**
+Slightly lower predictive precision for the broad recommendations compared to a full ML pass. The exact probability is only calculated precisely when a user explicitly predicts a *single* specific college and branch combination.
