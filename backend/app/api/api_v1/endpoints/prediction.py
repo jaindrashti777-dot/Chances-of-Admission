@@ -9,9 +9,9 @@ from backend.app.schemas.prediction import (
     BatchPredictionResponse,
     RecommendationResponse
 )
-from backend.app.inference.prediction_service import prediction_service
-from backend.app.inference.model_service import model_manager
-from backend.app.inference.recommendation_service import recommendation_service
+from backend.app.prediction.prediction_service import prediction_service
+from backend.app.prediction.model_service import model_manager
+from backend.app.prediction.recommendation_service import recommendation_service
 from backend.app.db.session import get_db
 
 logger = logging.getLogger(__name__)
