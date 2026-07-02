@@ -95,6 +95,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     try:
         df = pd.read_csv("ml/data/processed/processed_data.csv")
-        train_and_tune(df, target_col="closing_rank", models_dir="ml/models", reports_dir="ml/reports/metrics")
+        train_and_tune(df, target_col="closing_rank", models_dir="ml/artifacts", reports_dir="ml/reports/metrics")
     except Exception as e:
         logger.error(f"Error during training: {e}")

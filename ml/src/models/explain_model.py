@@ -57,7 +57,7 @@ def generate_shap_explanations(model_path: str, data_path: str, output_dir: str)
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     generate_shap_explanations(
-        "ml/models/best_model.joblib", 
+        "ml/artifacts/best_model.joblib", 
         "ml/data/processed/processed_data.csv", 
         "ml/reports/explainability"
     )

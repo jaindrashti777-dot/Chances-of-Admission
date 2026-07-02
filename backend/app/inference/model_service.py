@@ -19,7 +19,7 @@ class ModelManager:
             cls._instance = super(ModelManager, cls).__new__(cls)
         return cls._instance
 
-    def load_model(self, model_path: str = "ml/models/best_model.joblib"):
+    def load_model(self, model_path: str = "ml/artifacts/best_model.joblib"):
         path = Path(model_path)
         # Check parent directories or absolute path if not found (for monorepo structure)
         if not path.exists():
