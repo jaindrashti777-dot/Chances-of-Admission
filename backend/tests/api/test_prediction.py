@@ -14,7 +14,7 @@ def test_predict_validation_error(client):
     assert response.status_code == 422 # Validation Error
     
 def test_predict_model_unavailable(client, monkeypatch):
-    from backend.app.prediction.model_service import model_manager
+    from backend.app.prediction.model_registry import model_manager
     # Force model to be None to test graceful degradation
     monkeypatch.setattr(model_manager, "_model", None)
     

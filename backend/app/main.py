@@ -6,7 +6,7 @@ from backend.app.core.logging import setup_logging
 from backend.app.core.exceptions import setup_exception_handlers
 from backend.app.core.middleware import setup_middlewares
 from backend.app.api.api_v1.api import api_router
-from backend.app.prediction.model_service import model_manager
+from backend.app.prediction.model_registry import model_manager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

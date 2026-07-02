@@ -9,9 +9,9 @@ from backend.app.schemas.prediction import (
     BatchPredictionResponse,
     RecommendationResponse
 )
-from backend.app.prediction.prediction_service import prediction_service
-from backend.app.prediction.model_service import model_manager
-from backend.app.prediction.recommendation_service import recommendation_service
+from backend.app.prediction.predictor import predictor
+from backend.app.prediction.model_registry import model_manager
+from backend.app.prediction.college_recommender import college_recommender
 from backend.app.db.session import get_db
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def predict_admission(request: PredictionRequest):
     """
     Predict admission probability for a single college/branch combination.
     """
-    return prediction_service.process_prediction(request)
+    return predictor.process_prediction(request)
 
 @router.post("/batch", response_model=BatchPredictionResponse)
 def predict_batch(request: BatchPredictionRequest):
@@ -32,7 +32,7 @@ def predict_batch(request: BatchPredictionRequest):
     results = []
     for req in request.predictions:
         try:
-            res = prediction_service.process_prediction(req)
+            res = predictor.process_prediction(req)
             results.append(res)
         except Exception as e:
             logger.warning(f"Batch item failed: {e}")
@@ -56,4 +56,4 @@ def get_recommendations(
     """
     Get Safe, Target, and Dream college recommendations based on historical data.
     """
-    return recommendation_service.get_recommendations(db, user_rank, category_id, quota_id)
+    return college_recommender.get_recommendations(db, user_rank, category_id, quota_id)
