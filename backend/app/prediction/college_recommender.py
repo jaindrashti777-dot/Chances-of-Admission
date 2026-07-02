@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class CollegeRecommender:
     @staticmethod
-    def get_recommendations(db: Session, user_rank: int, category_id: int, quota_id: int) -> RecommendationResponse:
+    def get_recommendations(db: Session, user_rank: int, category_name: str, quota_name: str) -> RecommendationResponse:
         """
         Queries historical cutoffs from the database and categorizes them into Safe, Target, and Dream based on the user's rank.
         This avoids running ML predictions for thousands of colleges in real-time.
@@ -20,10 +20,15 @@ class CollegeRecommender:
         
         # Simplified query: fetch cutoffs for the latest year matching user category/quota
         # In a real scenario, this would aggregate or use the ML model in batch offline.
-        stmt = select(HistoricalCutoff, College, Branch).join(College).join(Branch).where(
-            HistoricalCutoff.category_id == category_id,
-            HistoricalCutoff.quota_id == quota_id,
-            HistoricalCutoff.year == 2023 # Using previous year as heuristic
+        from backend.app.models.cutoff import Category, Quota
+        
+        stmt = select(HistoricalCutoff, College, Branch).join(College).join(Branch)\
+            .join(Category, HistoricalCutoff.category_id == Category.id)\
+            .join(Quota, HistoricalCutoff.quota_id == Quota.id)\
+            .where(
+                Category.name == category_name,
+                Quota.name == quota_name,
+                HistoricalCutoff.year == 2023 # Using previous year as heuristic
         ).limit(50)
         
         results = db.execute(stmt).all()

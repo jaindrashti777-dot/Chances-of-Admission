@@ -49,11 +49,11 @@ def get_model_info():
 @router.get("/recommendations", response_model=RecommendationResponse)
 def get_recommendations(
     user_rank: int,
-    category_id: int,
-    quota_id: int,
+    category: str,
+    quota: str,
     db: Session = Depends(get_db)
 ):
     """
     Get Safe, Target, and Dream college recommendations based on historical data.
     """
-    return college_recommender.get_recommendations(db, user_rank, category_id, quota_id)
+    return college_recommender.get_recommendations(db, user_rank, category, quota)

@@ -23,15 +23,15 @@ export const usePredictAdmission = () => {
   })
 }
 
-export const useRecommendations = (user_rank: number, category_id: number, quota_id: number) => {
+export const useRecommendations = (user_rank: number, category: string, quota: string) => {
   return useQuery({
-    queryKey: ["recommendations", user_rank, category_id, quota_id],
+    queryKey: ["recommendations", user_rank, category, quota],
     queryFn: async () => {
       const response = await apiClient.get("/prediction/recommendations", {
-        params: { user_rank, category_id, quota_id },
+        params: { user_rank, category, quota },
       })
       return response.data
     },
-    enabled: !!user_rank && !!category_id && !!quota_id,
+    enabled: !!user_rank && !!category && !!quota,
   })
 }
