@@ -4,7 +4,7 @@
 
 ### Slide 1: Title
 **Title**: Chances Of Admission (India)
-**Subtitle**: AI-Powered Engineering Admission Predictor
+**Subtitle**: Engineering Admission Probability Predictor
 **Speaker Notes**: "Good morning everyone. Today I'll be presenting my internship project, 'Chances of Admission', an AI application designed to help engineering students navigate the JoSAA counselling process."
 
 ### Slide 2: Problem Statement

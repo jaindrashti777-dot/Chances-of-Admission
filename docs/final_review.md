@@ -23,7 +23,7 @@
 ## 3. Engineering Review (Manager Perspective)
 **Score: 9.5 / 10**
 
-- **Strengths**: The separation of concerns is exceptional. The ML pipeline operates independently of the FastAPI service but integrates flawlessly via a Singleton manager. The React frontend is strongly typed and utilizes enterprise-grade form validation (Zod).
+- **Strengths**: The separation of concerns is exceptional. The ML pipeline operates independently of the FastAPI service but integrates flawlessly via a Singleton manager. The React frontend is strongly typed and utilizes robust form validation (Zod).
 - **Weaknesses/Technical Debt**: The recommendation engine currently relies on a database query heuristic comparing user rank against previous year closing ranks. While functional, migrating this to an advanced KNN algorithm in the ML layer would increase accuracy.
 - **Portfolio Value**: Outstanding. This project demonstrates full-stack competence, MLOps, DevOps, and rigorous API design. It is highly attractive to recruiters for SRE, Data Engineering, or Full-Stack roles.
 
