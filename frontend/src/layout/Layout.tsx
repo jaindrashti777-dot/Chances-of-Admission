@@ -13,7 +13,6 @@ export default function Layout() {
           <nav className="ml-auto flex gap-4 text-sm font-medium">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <Link to="/predict" className="hover:text-primary transition-colors">Predict</Link>
-            <Link to="/about" className="hover:text-primary transition-colors">Methodology</Link>
           </nav>
         </div>
       </header>

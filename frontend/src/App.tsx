@@ -20,10 +20,6 @@ const router = createBrowserRouter([
       {
         path: "results",
         element: <Results />
-      },
-      {
-        path: "about",
-        element: <div className="text-center py-12"><h2 className="text-2xl font-bold">Methodology</h2><p className="mt-4 text-muted-foreground">Information about our ML models and datasets.</p></div>
       }
     ]
   }

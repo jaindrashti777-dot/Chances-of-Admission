@@ -22,16 +22,16 @@ export default function Home() {
               Start Free Prediction
             </Button>
           </Link>
-          <Link to="/about">
+          <a href="#how-it-works">
             <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg h-14 px-8">
               How it works
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
 
       {/* Feature Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mt-20 text-left">
+      <div id="how-it-works" className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mt-20 text-left">
         <div className="p-8 border rounded-2xl bg-card shadow-sm hover:shadow-md transition-shadow">
           <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
