@@ -1,0 +1,34 @@
+{
+    "training_date": "2026-07-02T20:19:39.797797",
+    "best_model": "LinearRegression",
+    "metrics": {
+        "LinearRegression": {
+            "MAE": 12172.812767887404,
+            "RMSE": 14247.425209354318,
+            "R2": -0.016859224719356414
+        },
+        "RandomForest": {
+            "MAE": 12838.15591892857,
+            "RMSE": 15012.307813248744,
+            "R2": -0.12897150964414528
+        },
+        "XGBoost": {
+            "MAE": 12393.73046875,
+            "RMSE": 14518.28970643581,
+            "R2": -0.055890798568725586
+        }
+    },
+    "features": [
+        "counselling_body",
+        "institute_type",
+        "college_name",
+        "branch_name",
+        "college_id",
+        "branch_id",
+        "category",
+        "quota",
+        "seat_pool",
+        "year",
+        "round_number"
+    ]
+}
