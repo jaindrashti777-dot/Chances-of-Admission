@@ -1,5 +1,11 @@
 node_modules/
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+coverage/
+htmlcov/
+*.log
 *.db
 .pytest_cache/
 dist/
