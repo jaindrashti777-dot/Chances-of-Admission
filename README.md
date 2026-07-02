@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150" alt="Chances of Admission Logo">
   <h1>Chances Of Admission (India)</h1>
-  <p>An AI-powered web application for predicting engineering college admission probabilities using historical JoSAA counselling data.</p>
+  <p>This project predicts admission probability for Indian engineering counselling using historical admission data and supervised machine learning.</p>
+  <p>The objective is educational and demonstrates how a complete ML-backed web application can be designed and deployed.</p>
 </div>
 
 ---
