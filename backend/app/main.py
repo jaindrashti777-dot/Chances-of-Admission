@@ -6,8 +6,7 @@ from backend.app.core.logging import setup_logging
 from backend.app.core.exceptions import setup_exception_handlers
 from backend.app.core.middleware import setup_middlewares
 from backend.app.api.api_v1.api import api_router
-from backend.app.core.responses import success_response
-from backend.app.ml_integration.model_service import model_manager
+from backend.app.inference.model_service import model_manager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -40,10 +39,10 @@ def create_app() -> FastAPI:
     
     @app.get("/", tags=["root"])
     def root():
-        return success_response({
+        return {
             "message": f"Welcome to {settings.PROJECT_NAME} API",
             "docs": "/docs"
-        })
+        }
         
     return app
 

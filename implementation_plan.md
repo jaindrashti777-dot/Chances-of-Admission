@@ -1,58 +1,47 @@
-# Phase 3: Project Structure & Development Environment
+# Engineering Refactor Mode: Implementation Plan
 
-This plan outlines the steps to initialize the project repository according to the approved Software Requirements Specification and System Architecture.
+The application is feature-complete. The objective is now to transform it from an AI-generated prototype into a handcrafted, professional software engineering project ready for Version 1.0 release. 
 
-## Goal Description
-Create a professional development foundation for the "Chances of Admission (India)" project, including a clean folder structure, backend setup (FastAPI), frontend setup (React+Vite+TS), and necessary configuration files, without implementing business logic.
-
-## Proposed Changes
-
-### 1. Folder Structure Setup
-We will create a root-level directory structure to separate concerns clearly:
-- `frontend/` - React SPA (TypeScript, Vite, Tailwind CSS)
-- `backend/` - FastAPI application
-- `ml/` - Machine Learning pipelines and model training scripts
-- `dataset/` - Raw and cleaned CSV/JSON files containing historical data
-- `docs/` - Architecture designs, API contracts, and user guides
-- `tests/` - Global E2E and integration tests (unit tests will be inside `frontend/` and `backend/`)
-- `scripts/` - Automation scripts for DB seeding, ETL pipelines, and deployments
-- `assets/` - Static assets like images or brand logos
-- `config/` - Global configuration files
-
-### 2. Configuration Files
-Generate root-level configurations:
-- `[NEW] .gitignore` - Ignore `node_modules`, `__pycache__`, `.env`, `.venv`, OS files.
-- `[NEW] .env.example` - Template for environment variables (DB URLs, API keys) without secrets.
-- `[NEW] README.md` - Professional README containing project overview, tech stack, getting started guide, and architecture links.
-- `[NEW] .editorconfig` - Enforce consistent indentation (spaces, 2 for JS, 4 for Python).
-
-### 3. Backend Initialization (Python/FastAPI)
-- `[NEW] backend/requirements.txt` - Define core dependencies (`fastapi`, `uvicorn`, `pydantic`, `sqlalchemy`, `pytest`).
-- `[NEW] backend/main.py` - Application entry point with a `/health` endpoint placeholder.
-- `[NEW] backend/core/config.py` - Configuration loader (Pydantic BaseSettings).
-- `[NEW] backend/core/logging.py` - Structured logging setup (JSON logs in prod, readable in dev).
-- `[NEW] backend/core/exceptions.py` - Global exception handler placeholder.
-- `[NEW] backend/api/dependencies.py` - Dependency injection placeholder.
-- `[NEW] backend/Dockerfile` - Docker readiness.
-
-### 4. Frontend Initialization (React/TypeScript/Vite)
-- We will use `npx create-vite frontend --template react-ts` to scaffold the project.
-- `[NEW] frontend/package.json` - Updated with `tailwindcss`, `eslint`, `prettier`, `react-router-dom`.
-- `[NEW] frontend/tailwind.config.js` and `postcss.config.js` - Tailwind setup.
-- `[NEW] frontend/src/App.tsx` - Basic layout and routing placeholder.
-- `[NEW] frontend/Dockerfile` - Docker readiness.
-
-### 5. Development Standards
-- Python: `black` for formatting, `flake8` for linting, `mypy` for typing.
-- Frontend: `eslint` and `prettier` for linting and formatting.
-- Git: Define a branch strategy (main, dev, feature/*) and commit conventions in the README.
+## Goal
+Eliminate "AI fingerprints" (generic naming, massive files, repeated logic, placeholder UI) and enforce strict architectural boundaries, maintainability, and quality standards.
 
 ## User Review Required
 > [!IMPORTANT]
-> Please review this structure and approach. If approved, I will proceed with creating the files and running the initialization commands. This will establish the foundation for all subsequent phases.
+> The refactor will be conducted iteratively. For each phase, I will:
+> 1. **Review** the code.
+> 2. **Explain** the findings and proposed changes.
+> 3. **Refactor** the code.
+> 4. **Validate** the changes.
+> I will STOP after each phase and request your approval before moving to the next.
 
-## Verification Plan
-1. Ensure all directories and files are created successfully.
-2. Verify `frontend` starts up without errors.
-3. Verify `backend` can be run and serves the `/health` endpoint.
-4. Verify linters and formatters are configured.
+## Execution Phases
+
+### Phase 1: Architecture & Folder Structure Review
+- **Audit**: Analyze the overall project hierarchy, feature ownership, and module boundaries.
+- **Action**: Remove dead folders, rename generic folders, ensure strict separation of concerns.
+- **Deliverable**: Initialize `Engineering-Decisions.md` to track all major architectural decisions moving forward.
+
+### Phase 2: Database & Data Layer Review
+- **Audit**: Review `backend/app/db/`, `backend/app/models/`, and `backend/app/repositories/`.
+- **Action**: Check schema normalization, index logic, query efficiency, and repository pattern implementation. Refactor generic naming (e.g., `base.py`, `item.py`) into domain-driven naming.
+
+### Phase 3: Backend API & Services Review
+- **Audit**: Review `backend/app/api/` and `backend/app/services/`.
+- **Action**: Audit Request lifecycle, strict Pydantic validation, unified error handling, and robust logging. Remove excessive abstractions if they constitute over-engineering, or add them if under-engineered.
+
+### Phase 4: Machine Learning Pipeline Review
+- **Audit**: Review `ml/` and `backend/app/ml_integration/`.
+- **Action**: Ensure reproducible preprocessing, justify feature engineering, and decouple model serving completely from core business logic. Remove any "fake analytics" or pseudo-ML code.
+
+### Phase 5: Frontend & UX Review
+- **Audit**: Review `frontend/src/` (components, pages, routing, hooks).
+- **Action**: Eliminate generic Tailwind "placeholder cards", refine typography, check accessibility, and enforce proper React state management/memoization. Make the UI feel intentionally designed.
+
+### Phase 6: Documentation & Final Polish
+- **Audit**: Review all Markdown files in `docs/` and `project-docs/`.
+- **Action**: Rewrite documentation to reflect human engineering logic. Remove "AI-generated" phrasing. 
+- **Deliverable**: Generate the Final Review Scorecard from the perspectives of a Senior Engineer, Engineering Manager, Tech Lead, and Recruiter.
+
+## Open Questions
+- Do you agree with this phased order of execution?
+- Would you prefer me to commit my changes after *each phase* or at the very end of the entire audit?

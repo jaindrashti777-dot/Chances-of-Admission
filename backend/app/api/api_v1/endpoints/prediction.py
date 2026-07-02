@@ -9,30 +9,22 @@ from backend.app.schemas.prediction import (
     BatchPredictionResponse,
     RecommendationResponse
 )
-from backend.app.core.responses import APIResponse, success_response, error_response
-from backend.app.ml_integration.prediction_service import prediction_service
-from backend.app.ml_integration.model_service import model_manager
-from backend.app.ml_integration.recommendation_service import recommendation_service
+from backend.app.inference.prediction_service import prediction_service
+from backend.app.inference.model_service import model_manager
+from backend.app.inference.recommendation_service import recommendation_service
 from backend.app.db.session import get_db
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-@router.post("/", response_model=APIResponse[PredictionResponse])
+@router.post("/", response_model=PredictionResponse)
 def predict_admission(request: PredictionRequest):
     """
     Predict admission probability for a single college/branch combination.
     """
-    try:
-        prediction = prediction_service.process_prediction(request)
-        return success_response(prediction)
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        logger.error(f"Error in /predict endpoint: {e}")
-        return error_response("Failed to generate prediction.", str(e))
+    return prediction_service.process_prediction(request)
 
-@router.post("/batch", response_model=APIResponse[BatchPredictionResponse])
+@router.post("/batch", response_model=BatchPredictionResponse)
 def predict_batch(request: BatchPredictionRequest):
     """
     Predict admission probabilities for multiple combinations.
@@ -45,16 +37,16 @@ def predict_batch(request: BatchPredictionRequest):
         except Exception as e:
             logger.warning(f"Batch item failed: {e}")
             # Append a structured error for the specific item or skip
-    return success_response(BatchPredictionResponse(results=results))
+    return BatchPredictionResponse(results=results)
 
-@router.get("/info", response_model=APIResponse[dict])
+@router.get("/info")
 def get_model_info():
     """
     Returns metadata about the currently loaded ML model.
     """
-    return success_response(model_manager.get_info())
+    return model_manager.get_info()
 
-@router.get("/recommendations", response_model=APIResponse[RecommendationResponse])
+@router.get("/recommendations", response_model=RecommendationResponse)
 def get_recommendations(
     user_rank: int,
     category_id: int,
@@ -64,9 +56,4 @@ def get_recommendations(
     """
     Get Safe, Target, and Dream college recommendations based on historical data.
     """
-    try:
-        recs = recommendation_service.get_recommendations(db, user_rank, category_id, quota_id)
-        return success_response(recs)
-    except Exception as e:
-        logger.error(f"Error generating recommendations: {e}")
-        return error_response("Failed to generate recommendations.", str(e))
+    return recommendation_service.get_recommendations(db, user_rank, category_id, quota_id)

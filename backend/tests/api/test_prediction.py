@@ -2,9 +2,7 @@ def test_model_info(client):
     response = client.get("/api/v1/prediction/info")
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "success"
-    # Model might be 'not_found' during testing if not physically present, which is fine to test
-    assert "status" in data["data"]
+    assert "status" in data
 
 def test_predict_validation_error(client):
     # Missing required fields like 'user_rank'
@@ -16,7 +14,7 @@ def test_predict_validation_error(client):
     assert response.status_code == 422 # Validation Error
     
 def test_predict_model_unavailable(client, monkeypatch):
-    from backend.app.ml_integration.model_service import model_manager
+    from backend.app.inference.model_service import model_manager
     # Force model to be None to test graceful degradation
     monkeypatch.setattr(model_manager, "_model", None)
     

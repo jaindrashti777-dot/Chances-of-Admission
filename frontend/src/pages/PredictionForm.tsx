@@ -55,48 +55,73 @@ export default function PredictionForm() {
           <CardTitle>Enter Prediction Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label className="text-sm font-medium mb-1 block">JEE Rank</label>
-              <Input type="number" {...register("user_rank", { valueAsNumber: true })} placeholder="e.g. 1500" />
-              {errors.user_rank && <p className="text-sm text-destructive mt-1">{errors.user_rank.message}</p>}
+              <label className="text-sm font-semibold mb-1.5 block">JEE Main Rank</label>
+              <Input type="number" {...register("user_rank", { valueAsNumber: true })} placeholder="e.g. 1500" className="h-12" />
+              {errors.user_rank && <p className="text-sm text-destructive mt-1.5">{errors.user_rank.message}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="text-sm font-medium mb-1 block">College Name</label>
-                <Input {...register("college_name")} placeholder="e.g. NIT Trichy" />
-                {errors.college_name && <p className="text-sm text-destructive mt-1">{errors.college_name.message}</p>}
+                <label className="text-sm font-semibold mb-1.5 block">College Name</label>
+                <Input {...register("college_name")} placeholder="e.g. NIT Trichy" className="h-12" />
+                {errors.college_name && <p className="text-sm text-destructive mt-1.5">{errors.college_name.message}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Branch Name</label>
-                <Input {...register("branch_name")} placeholder="e.g. Computer Science" />
-                {errors.branch_name && <p className="text-sm text-destructive mt-1">{errors.branch_name.message}</p>}
+                <label className="text-sm font-semibold mb-1.5 block">Branch Name</label>
+                <Input {...register("branch_name")} placeholder="e.g. Computer Science" className="h-12" />
+                {errors.branch_name && <p className="text-sm text-destructive mt-1.5">{errors.branch_name.message}</p>}
               </div>
             </div>
             
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div>
-                <label className="text-sm font-medium mb-1 block">Category</label>
-                <Input {...register("category")} placeholder="e.g. OPEN" />
+                <label className="text-sm font-semibold mb-1.5 block">Category</label>
+                <select 
+                  {...register("category")} 
+                  className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="OPEN">OPEN (General)</option>
+                  <option value="OBC-NCL">OBC-NCL</option>
+                  <option value="SC">SC</option>
+                  <option value="ST">ST</option>
+                  <option value="EWS">EWS</option>
+                </select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Quota</label>
-                <Input {...register("quota")} placeholder="e.g. OS" />
+                <label className="text-sm font-semibold mb-1.5 block">State Quota</label>
+                <select 
+                  {...register("quota")} 
+                  className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="OS">Other State (OS)</option>
+                  <option value="HS">Home State (HS)</option>
+                  <option value="AI">All India (AI)</option>
+                </select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Institute</label>
-                <Input {...register("institute_type")} placeholder="e.g. NIT" />
+                <label className="text-sm font-semibold mb-1.5 block">Institute Type</label>
+                <select 
+                  {...register("institute_type")} 
+                  className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="NIT">NIT</option>
+                  <option value="IIIT">IIIT</option>
+                  <option value="GFTI">GFTI</option>
+                  <option value="IIT">IIT</option>
+                </select>
               </div>
             </div>
 
             {error && (
-              <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-                Prediction failed. Please check your inputs or try again later.
+              <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-md text-sm font-medium">
+                Prediction failed. Please check your inputs and try again.
               </div>
             )}
             
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Calculating..." : "Predict Probability"}
+            <Button type="submit" className="w-full h-12 text-lg shadow-md" disabled={isPending}>
+              {isPending ? "Running Prediction Model..." : "Calculate Probability"}
             </Button>
           </form>
         </CardContent>

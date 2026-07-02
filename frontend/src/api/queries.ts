@@ -18,7 +18,7 @@ export const usePredictAdmission = () => {
   return useMutation({
     mutationFn: async (data: PredictionRequest) => {
       const response = await apiClient.post("/prediction/", data)
-      return response.data.data
+      return response.data
     },
   })
 }
@@ -30,7 +30,7 @@ export const useRecommendations = (user_rank: number, category_id: number, quota
       const response = await apiClient.get("/prediction/recommendations", {
         params: { user_rank, category_id, quota_id },
       })
-      return response.data.data
+      return response.data
     },
     enabled: !!user_rank && !!category_id && !!quota_id,
   })
