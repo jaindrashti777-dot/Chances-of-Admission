@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 __pycache__/
 *.db
 .pytest_cache/
@@ -7,4 +7,6 @@ dist/
 
 ml/artifacts/*.joblib
 ml/data/processed/*.csv
+ml/data/raw/*.csv
 ml/reports/metrics/*.json
+ml/reports/eda/*.png
