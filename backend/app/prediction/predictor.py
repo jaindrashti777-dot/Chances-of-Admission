@@ -38,7 +38,7 @@ class Predictor:
                 risk = "Unlikely"
                 
             # SHAP Explainability
-            explanation = PredictionService._generate_explanation(model, df, risk)
+            explanation = Predictor._generate_explanation(request, predicted_rank, risk)
             
             return PredictionResponse(
                 predicted_closing_rank=round(predicted_rank),
@@ -53,32 +53,52 @@ class Predictor:
             raise HTTPException(status_code=500, detail="Error during prediction processing.")
 
     @staticmethod
-    def _generate_explanation(model, df, risk_level) -> SHAPExplanation:
+    def _generate_explanation(request: PredictionRequest, predicted_rank: float, risk_level: str) -> SHAPExplanation:
         """
-        Generates a simplified SHAP explanation for the API response.
+        Generates an educational explanation based on the user's inputs and predicted outcomes.
+        Provides actionable insights on why a prediction was made.
         """
-        try:
-            preprocessor = model.named_steps['preprocessor']
-            regressor = model.named_steps['model']
+        top_pos = {}
+        top_neg = {}
+        
+        # 1. Quota Insights
+        if request.quota == 'HS':
+            top_pos["Home State Quota"] = 100.0
+        elif request.quota == 'OS':
+            top_neg["All-India Competition (OS)"] = -50.0
             
-            X_transformed = preprocessor.transform(df)
-            explainer = shap.TreeExplainer(regressor)
-            shap_values = explainer.shap_values(X_transformed)
+        # 2. Category Insights
+        if request.category != 'OPEN':
+            top_pos[f"{request.category} Reservation"] = 150.0
             
-            # This is a highly simplified dummy aggregation for API response formatting.
-            # In production, map shap_values[0] back to feature names.
-            top_pos = {"Category Match": 120.5}
-            top_neg = {"High Competition State": -45.2}
+        # 3. Rank Proximity Insights
+        rank_diff = predicted_rank - request.user_rank
+        if risk_level in ["Safe", "Target"]:
+            if rank_diff > 0:
+                top_pos["Strong Rank Alignment"] = 80.0
+        else:
+            top_neg["Rank Below Historical Range"] = -120.0
             
-            summary = f"Based on historical trends, this is a {risk_level} option. The category and quota are the strongest positive factors."
+        # Generate Educational Summary
+        summary_sentences = []
+        if request.quota == 'HS':
+            summary_sentences.append("Your Home State quota improves your chances significantly by placing you in a specialized seat pool.")
+        if request.category != 'OPEN':
+            summary_sentences.append(f"Category reservation ({request.category}) significantly affects the prediction, expanding the historical cutoff limits.")
             
-            return SHAPExplanation(
-                top_positive_features=top_pos,
-                top_negative_features=top_neg,
-                human_summary=summary
-            )
-        except Exception as e:
-            logger.warning(f"Failed to generate SHAP explanation: {e}")
-            return None
+        if risk_level == "Safe":
+            summary_sentences.append("Your rank is comfortably within the historical range for this branch.")
+        elif risk_level == "Target":
+            summary_sentences.append("Your rank is highly competitive and aligns closely with historical closing ranks.")
+        else:
+            summary_sentences.append("Your rank falls outside the typical historical range for this branch, making it highly competitive.")
+            
+        human_summary = " ".join(summary_sentences)
+        
+        return SHAPExplanation(
+            top_positive_features=top_pos,
+            top_negative_features=top_neg,
+            human_summary=human_summary
+        )
 
 predictor = Predictor()

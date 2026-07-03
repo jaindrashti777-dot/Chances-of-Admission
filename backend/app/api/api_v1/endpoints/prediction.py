@@ -57,3 +57,22 @@ def get_recommendations(
     Get Safe, Target, and Dream college recommendations based on historical data.
     """
     return college_recommender.get_recommendations(db, user_rank, category, quota)
+
+@router.get("/trend")
+def get_historical_trend(
+    college_name: str,
+    branch_name: str,
+    category: str,
+    quota: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Get historical cutoff trends for a specific college, branch, category, and quota.
+    """
+    return college_recommender.get_historical_trend(
+        db=db,
+        college_name=college_name,
+        branch_name=branch_name,
+        category_name=category,
+        quota_name=quota
+    )

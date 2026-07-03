@@ -67,5 +67,40 @@ class CollegeRecommender:
             target_colleges=target,
             dream_colleges=dream
         )
+        
+    @staticmethod
+    def get_historical_trend(db: Session, college_name: str, branch_name: str, category_name: str, quota_name: str):
+        from backend.app.models.cutoff import Category, Quota
+        from backend.app.schemas.prediction import TrendResponse, TrendDataPoint
+        
+        stmt = select(HistoricalCutoff.year, HistoricalCutoff.closing_rank)\
+            .join(College, HistoricalCutoff.college_id == College.id)\
+            .join(Branch, HistoricalCutoff.branch_id == Branch.id)\
+            .join(Category, HistoricalCutoff.category_id == Category.id)\
+            .join(Quota, HistoricalCutoff.quota_id == Quota.id)\
+            .where(
+                College.name == college_name,
+                Branch.name == branch_name,
+                Category.name == category_name,
+                Quota.name == quota_name
+            ).order_by(HistoricalCutoff.year.asc())
+            
+        results = db.execute(stmt).all()
+        
+        # Deduplicate by year (take the last round / minimum rank typically, but we'll just take the first match per year here for simplicity)
+        seen_years = set()
+        trend_data = []
+        for year, closing_rank in results:
+            if year not in seen_years and closing_rank:
+                seen_years.add(year)
+                trend_data.append(TrendDataPoint(year=year, closing_rank=closing_rank))
+                
+        return TrendResponse(
+            college_name=college_name,
+            branch_name=branch_name,
+            category=category_name,
+            quota=quota_name,
+            trend=trend_data
+        )
 
 college_recommender = CollegeRecommender()

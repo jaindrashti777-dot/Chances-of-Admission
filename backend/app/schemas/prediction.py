@@ -44,3 +44,14 @@ class RecommendationResponse(BaseModel):
     safe_colleges: List[CollegeRecommendation]
     target_colleges: List[CollegeRecommendation]
     dream_colleges: List[CollegeRecommendation]
+
+class TrendDataPoint(BaseModel):
+    year: int
+    closing_rank: int
+
+class TrendResponse(BaseModel):
+    college_name: str
+    branch_name: str
+    category: str
+    quota: str
+    trend: List[TrendDataPoint]

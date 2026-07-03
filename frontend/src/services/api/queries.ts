@@ -35,3 +35,16 @@ export const useRecommendations = (user_rank: number, category: string, quota: s
     enabled: !!user_rank && !!category && !!quota,
   })
 }
+
+export const useHistoricalTrend = (college_name: string, branch_name: string, category: string, quota: string) => {
+  return useQuery({
+    queryKey: ["trend", college_name, branch_name, category, quota],
+    queryFn: async () => {
+      const response = await apiClient.get("/prediction/trend", {
+        params: { college_name, branch_name, category, quota },
+      })
+      return response.data
+    },
+    enabled: !!college_name && !!branch_name && !!category && !!quota,
+  })
+}

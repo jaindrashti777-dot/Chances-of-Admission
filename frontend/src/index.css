@@ -1,74 +1,250 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+
+/* ─── Google Fonts ─────────────────────────────────────── */
+/* Inter is loaded via index.html link tag for performance */
+
+/* ─── Design Tokens ────────────────────────────────────── */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dark-first palette — AdmitIQ navy/indigo */
+    --background:    222 84% 5%;        /* #080d1a  deep navy */
+    --foreground:    210 40% 98%;       /* #f8fafc  near white */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-
-    --radius: 0.5rem;
-  }
- 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    --card:          222 47% 9%;        /* #0d1424  card surface */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover:       222 47% 9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary:       239 84% 67%;       /* #6366f1  indigo */
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary:     217 33% 15%;       /* #1a2236  subtle navy */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted:         217 33% 13%;       /* #141e30 */
+    --muted-foreground: 215 20% 55%;    /* #7a8ba0 */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent:        189 94% 43%;       /* #06b6d4  electric teal */
+    --accent-foreground: 222 84% 5%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive:   0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --success:       158 64% 52%;       /* #34d399  emerald */
+    --warning:       38 92% 50%;        /* #f59e0b  amber */
+
+    --border:        217 33% 17%;       /* #1e293b */
+    --input:         217 33% 17%;
+    --ring:          239 84% 67%;
+
+    --radius:        0.75rem;
+
+    /* Glassmorphism */
+    --glass-bg:      rgba(13, 20, 36, 0.7);
+    --glass-border:  rgba(99, 102, 241, 0.15);
+    --glass-blur:    20px;
+
+    /* Glow effects */
+    --glow-primary:  0 0 40px rgba(99, 102, 241, 0.25);
+    --glow-accent:   0 0 40px rgba(6, 182, 212, 0.2);
+    --glow-success:  0 0 30px rgba(52, 211, 153, 0.2);
+  }
+
+  /* Light mode override — keep available but dark is default */
+  .light {
+    --background:    0 0% 100%;
+    --foreground:    222.2 84% 4.9%;
+    --card:          0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover:       0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary:       239 84% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary:     210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted:         210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent:        189 94% 43%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive:   0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border:        214.3 31.8% 91.4%;
+    --input:         214.3 31.8% 91.4%;
+    --ring:          239 84% 60%;
+    --glass-bg:      rgba(255, 255, 255, 0.7);
+    --glass-border:  rgba(99, 102, 241, 0.2);
   }
 }
- 
+
+/* ─── Base Styles ──────────────────────────────────────── */
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border box-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+    color: #f8fafc;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+}
+
+/* ─── Utility Classes ──────────────────────────────────── */
+@layer utilities {
+  /* Glassmorphism card */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-gold {
+    background: linear-gradient(135deg, #f59e0b 0%, #fcd34d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow borders */
+  .glow-border {
+    box-shadow: var(--glow-primary), inset 0 0 0 1px var(--glass-border);
+  }
+
+  .glow-border-accent {
+    box-shadow: var(--glow-accent), inset 0 0 0 1px rgba(6, 182, 212, 0.2);
+  }
+
+  /* Animated gradient background blob */
+  .bg-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    animation: blob-drift 8s ease-in-out infinite alternate;
+  }
+
+  /* Section number badge */
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Fade-in animation utility */
+  .animate-fade-in {
+    animation: fade-in 0.6s ease forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease forwards;
+  }
+
+  /* Shimmer / skeleton */
+  .shimmer {
+    background: linear-gradient(90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+}
+
+/* ─── Keyframe Animations ──────────────────────────────── */
+@keyframes blob-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -20px) scale(1.08); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400% 0; }
+  100% { background-position: 400% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: var(--glow-primary); }
+  50%       { box-shadow: 0 0 60px rgba(99, 102, 241, 0.4); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─── Print Styles — Download Report ──────────────────── */
+@media print {
+  header, footer, nav, .no-print { display: none !important; }
+  body {
+    background: white !important;
+    color: #0a0a0a !important;
+    font-size: 12pt;
+  }
+  .glass {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  .gradient-text {
+    -webkit-text-fill-color: #4f46e5 !important;
+    background: none !important;
+  }
+  .print-break-before { page-break-before: always; }
+  @page {
+    margin: 1.5cm 2cm;
+    size: A4;
   }
 }

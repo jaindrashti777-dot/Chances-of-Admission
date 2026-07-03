@@ -11,18 +11,24 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: <Home />,
       },
       {
+        // Primary route — "Analyze" (platform identity)
+        path: "analyze",
+        element: <PredictionForm />,
+      },
+      {
+        // Legacy alias kept for backward compatibility
         path: "predict",
-        element: <PredictionForm />
+        element: <PredictionForm />,
       },
       {
         path: "results",
-        element: <Results />
-      }
-    ]
-  }
+        element: <Results />,
+      },
+    ],
+  },
 ])
 
 export default function App() {
