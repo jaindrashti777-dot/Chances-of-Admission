@@ -34,8 +34,6 @@ RUN pip install --no-cache /wheels/*
 # Copy application code, model artifacts, and DB
 COPY backend/ /app/backend/
 COPY ml/ /app/ml/
-COPY alembic/ /app/alembic/
-COPY alembic.ini /app/alembic.ini
 COPY chances.db /app/chances.db
 
 # Environment Configuration
