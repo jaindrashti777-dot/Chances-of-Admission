@@ -7,6 +7,7 @@ pydantic-settings>=2.2.1
 # --- DATABASE ---
 sqlalchemy>=2.0.0
 alembic>=1.13.1
+psycopg2-binary>=2.9
 
 # --- INFERENCE & ML (Runtime Only) ---
 pandas>=2.0.0
