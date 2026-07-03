@@ -250,7 +250,7 @@ export default function Home() {
           <div className="absolute left-[39px] md:left-[67px] top-12 bottom-12 w-0.5 bg-gradient-to-b from-primary/30 via-accent/30 to-border/10" aria-hidden="true" />
           
           <div className="space-y-10 relative">
-            {trustMetrics.map((metric, idx) => (
+            {trustMetrics.map((metric) => (
               <div key={metric.label} className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 group">
                 <div className="flex items-center gap-4 md:gap-8 shrink-0">
                   <div className="h-12 w-12 rounded-full bg-background border border-border/60 flex items-center justify-center text-primary shadow-sm group-hover:scale-110 group-hover:border-primary/40 group-hover:shadow-glow transition-all duration-300 z-10 relative bg-secondary/80">

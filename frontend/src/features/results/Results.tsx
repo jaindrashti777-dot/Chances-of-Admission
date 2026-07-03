@@ -152,9 +152,9 @@ function HistoricalTrendSection({
                 }}
                 labelStyle={{ color: "hsl(var(--foreground))", fontWeight: "bold" }}
                 itemStyle={{ color: "hsl(var(--primary))" }}
-                formatter={(val: number, name: string, props: any) => [
-                  val.toLocaleString(), 
-                  props.payload.isPrediction ? "Predicted Rank" : "Closing Rank"
+                formatter={(value: any, _name: any, item: any) => [
+                  Number(value).toLocaleString(), 
+                  item?.payload?.isPrediction ? "Predicted Rank" : "Closing Rank"
                 ]}
               />
               <ReferenceLine x={2023} stroke="rgba(255,255,255,0.2)" strokeDasharray="3 3" />

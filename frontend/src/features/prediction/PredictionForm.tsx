@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import axios from "axios"
 import * as z from "zod"
 import { useNavigate } from "react-router-dom"
 import { usePredictAdmission } from "../../services/api/queries"
@@ -8,7 +9,7 @@ import { Input } from "../../shared/ui/input"
 
 // ─── Validation Schema ─────────────────────────────────────────────────────
 const schema = z.object({
-  user_rank:        z.number({ invalid_type_error: "Enter a valid rank" }).min(1, "Rank must be at least 1"),
+  user_rank:        z.number({ message: "Enter a valid rank" }).min(1, "Rank must be at least 1"),
   college_name:     z.string().min(2, "College name is required"),
   branch_name:      z.string().min(2, "Branch / programme is required"),
   institute_type:   z.string().min(1),
@@ -171,8 +172,7 @@ export default function PredictionForm() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>
                 <span>Analysis failed. Please verify your inputs and try again.</span>
               </div>
-              {/* @ts-ignore - axios error typings */}
-              {error.response?.data?.detail && (
+              {axios.isAxiosError(error) && error.response?.data?.detail && (
                 <p className="text-xs text-destructive/80 ml-6 bg-destructive/5 p-2 rounded border border-destructive/10">
                   {error.response.data.detail}
                 </p>
