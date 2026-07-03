@@ -89,13 +89,28 @@ CSE_BRANCHES = {
 }
 
 
-def build_features() -> pd.DataFrame:
+def build_features(allow_synthetic: bool = False) -> pd.DataFrame:
     if not MASTER.exists():
         raise FileNotFoundError(f"master_dataset.csv not found at {MASTER}")
 
     log.info("Loading master dataset...")
     df = pd.read_csv(MASTER)
-    log.info(f"  {len(df):,} rows loaded")
+    
+    # Filter synthetic data
+    if "data_source" in df.columns:
+        synth_count = (df["data_source"] == "SYNTHETIC").sum()
+        if synth_count > 0:
+            if not allow_synthetic:
+                log.warning(f"Dropping {synth_count:,} SYNTHETIC rows (use --allow-synthetic-training to include)")
+                df = df[df["data_source"] != "SYNTHETIC"]
+            else:
+                log.warning(f"Including {synth_count:,} SYNTHETIC rows for training due to --allow-synthetic-training flag")
+    
+    if df.empty:
+        log.error("Dataset is empty after filtering! Cannot build features.")
+        return pd.DataFrame()
+
+    log.info(f"  {len(df):,} rows loaded for feature engineering")
 
     # ── 1. Extract Round 6 (final cutoff) as the base signal ────────────
     log.info("\n[1/6] Extracting Round 6 cutoffs as base signal...")
@@ -265,4 +280,9 @@ def build_features() -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    build_features()
+    import argparse
+    parser = argparse.ArgumentParser(description="Stage 06: Build ML Features")
+    parser.add_argument("--allow-synthetic-training", action="store_true", 
+                        help="Allow SYNTHETIC data to be used in the feature set")
+    args = parser.parse_args()
+    build_features(allow_synthetic=args.allow_synthetic_training)

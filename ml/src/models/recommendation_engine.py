@@ -89,6 +89,7 @@ class RecommendationResult:
     historical_trend:     str           # tightening | relaxing | stable
     avg_3yr_closing:      Optional[float]
     counselling_body:     str
+    data_source:          str           # OFFICIAL | KAGGLE | SYNTHETIC
 
 
 # ---------------------------------------------------------------------------
@@ -264,6 +265,13 @@ class RecommendationEngine:
         self.features = pd.read_csv(FEATURES) if FEATURES.exists() else pd.DataFrame()
         self.rule_engine = RuleEngine(self.master)
         self.ranker      = RankScorer(self.features)
+        
+        # Guardrail check
+        if "data_source" in self.master.columns:
+            synth = (self.master["data_source"] == "SYNTHETIC").sum()
+            if synth > 0:
+                log.warning(f"⚠ RecommendationEngine initialized with {synth:,} SYNTHETIC records! These are for testing only.")
+
         log.info(
             f"RecommendationEngine loaded: {len(self.master):,} cutoff rows, "
             f"{len(self.features):,} feature rows"
@@ -314,6 +322,7 @@ class RecommendationEngine:
                 historical_trend=     scores["trend"],
                 avg_3yr_closing=      scores["avg_3yr"],
                 counselling_body=     body,
+                data_source=          row.get("data_source", "UNKNOWN"),
             )
             results_with_scores.append((scores["composite"], result))
 

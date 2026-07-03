@@ -22,6 +22,12 @@ class JSONFormatter(logging.Formatter):
             
         return json.dumps(log_data)
 
+class RequestIdFilter(logging.Filter):
+    def filter(self, record):
+        if not hasattr(record, "request_id"):
+            record.request_id = "N/A"
+        return True
+
 def setup_logging():
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG if settings.DEBUG else logging.INFO)
@@ -31,6 +37,7 @@ def setup_logging():
         logger.removeHandler(handler)
         
     handler = logging.StreamHandler(sys.stdout)
+    handler.addFilter(RequestIdFilter())
     
     if settings.ENVIRONMENT == "production":
         handler.setFormatter(JSONFormatter())

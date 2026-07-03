@@ -166,9 +166,17 @@ export default function PredictionForm() {
 
           {/* ── Error Alert ───────────────────────────────── */}
           {error && (
-            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-sm font-medium flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>
-              Analysis failed. Please verify your inputs and try again.
+            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-sm font-medium flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>
+                <span>Analysis failed. Please verify your inputs and try again.</span>
+              </div>
+              {/* @ts-ignore - axios error typings */}
+              {error.response?.data?.detail && (
+                <p className="text-xs text-destructive/80 ml-6 bg-destructive/5 p-2 rounded border border-destructive/10">
+                  {error.response.data.detail}
+                </p>
+              )}
             </div>
           )}
 

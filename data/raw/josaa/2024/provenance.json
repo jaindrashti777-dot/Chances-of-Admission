@@ -1,8 +1,10 @@
 {
   "year": 2024,
-  "source": "SYNTHETIC:ml/data/raw/josaa_cutoffs_2021_2023.csv",
-  "acquired_at": "2026-07-03T19:59:17.094518+00:00",
+  "source_tier": "SYNTHETIC",
+  "source_detail": "generator:synthetic_stub",
+  "acquired_at": "2026-07-03T20:49:20.644973+00:00",
   "row_count": 78408,
-  "notes": "WARNING: This is programmatically generated synthetic data. NOT real JoSAA records. Replace with real data via Kaggle or scraping.",
-  "sha256": "963038c5c23f9a29d4ebacd10c14d1dfd243e4e3dd632d0370a0f6f4fdc5fecc"
+  "notes": "TESTING ONLY. Synthetic data explicitly flagged for exclusion in production.",
+  "sha256": "963038c5c23f9a29d4ebacd10c14d1dfd243e4e3dd632d0370a0f6f4fdc5fecc",
+  "filename": "josaa_2024_raw.csv"
 }

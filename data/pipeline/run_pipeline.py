@@ -126,7 +126,7 @@ def main() -> None:
 
     parser.add_argument("--include-synthetic", action="store_true",
                         help="Allow synthetic data through the pipeline")
-    parser.add_argument("--strategy", choices=["auto", "kaggle", "scrape", "synthetic"],
+    parser.add_argument("--strategy", choices=["auto", "official", "kaggle", "synthetic"],
                         default="auto", help="Stage 1 acquisition strategy (default: auto)")
     parser.add_argument("--year", choices=["2023", "2024", "2025", "all"],
                         default="all", help="Stage 1: which year(s) to acquire")
@@ -163,7 +163,7 @@ def main() -> None:
         3: ["--strict"] if not args.include_synthetic else [],
         4: ["--include-synthetic"] if args.include_synthetic else [],
         5: [],
-        6: [],
+        6: ["--allow-synthetic-training"] if args.include_synthetic else [],
     }
 
     # Execute

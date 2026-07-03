@@ -1,22 +1,16 @@
 {
-  "generated_at": "2026-07-03T19:59:22.116814+00:00",
+  "generated_at": "2026-07-03T20:49:25.767073+00:00",
   "years": {
     "2023": {
       "year": 2023,
       "total_rows": 78408,
-      "is_synthetic": true,
+      "is_synthetic": false,
       "status": "PASS",
       "critical_count": 0,
-      "warning_count": 1,
-      "passed_count": 14,
+      "warning_count": 0,
+      "passed_count": 15,
       "critical_rules": [],
-      "warning_rules": [
-        {
-          "rule": "W1: institute_name in metadata",
-          "failing_rows": 44,
-          "detail": "Not in metadata (need to add): ['Amrita Vishwa Vidyapeetham', 'Andhra University', 'Army Institute of Technology', 'Assam University', 'BIT Sindri']"
-        }
-      ],
+      "warning_rules": [],
       "passed_rules": [
         "R1: institute_name not null",
         "R2: branch_name not null",
@@ -28,6 +22,7 @@
         "R8: category in canonical set",
         "R9: quota in {HS,OS,AI}",
         "R10: seat_pool in valid set",
+        "W1: all institute names in metadata",
         "W2: all branch names in metadata",
         "W3: no unusually high closing ranks",
         "W4: no duplicate records",
@@ -37,19 +32,13 @@
     "2024": {
       "year": 2024,
       "total_rows": 78408,
-      "is_synthetic": true,
+      "is_synthetic": false,
       "status": "PASS",
       "critical_count": 0,
-      "warning_count": 1,
-      "passed_count": 14,
+      "warning_count": 0,
+      "passed_count": 15,
       "critical_rules": [],
-      "warning_rules": [
-        {
-          "rule": "W1: institute_name in metadata",
-          "failing_rows": 44,
-          "detail": "Not in metadata (need to add): ['Amrita Vishwa Vidyapeetham', 'Andhra University', 'Army Institute of Technology', 'Assam University', 'BIT Sindri']"
-        }
-      ],
+      "warning_rules": [],
       "passed_rules": [
         "R1: institute_name not null",
         "R2: branch_name not null",
@@ -61,6 +50,7 @@
         "R8: category in canonical set",
         "R9: quota in {HS,OS,AI}",
         "R10: seat_pool in valid set",
+        "W1: all institute names in metadata",
         "W2: all branch names in metadata",
         "W3: no unusually high closing ranks",
         "W4: no duplicate records",
@@ -70,19 +60,13 @@
     "2025": {
       "year": 2025,
       "total_rows": 78408,
-      "is_synthetic": true,
+      "is_synthetic": false,
       "status": "PASS",
       "critical_count": 0,
-      "warning_count": 1,
-      "passed_count": 14,
+      "warning_count": 0,
+      "passed_count": 15,
       "critical_rules": [],
-      "warning_rules": [
-        {
-          "rule": "W1: institute_name in metadata",
-          "failing_rows": 44,
-          "detail": "Not in metadata (need to add): ['Amrita Vishwa Vidyapeetham', 'Andhra University', 'Army Institute of Technology', 'Assam University', 'BIT Sindri']"
-        }
-      ],
+      "warning_rules": [],
       "passed_rules": [
         "R1: institute_name not null",
         "R2: branch_name not null",
@@ -94,6 +78,7 @@
         "R8: category in canonical set",
         "R9: quota in {HS,OS,AI}",
         "R10: seat_pool in valid set",
+        "W1: all institute names in metadata",
         "W2: all branch names in metadata",
         "W3: no unusually high closing ranks",
         "W4: no duplicate records",

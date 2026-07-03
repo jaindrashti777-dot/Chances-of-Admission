@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 """
-Stage 01 — Data Acquisition
-============================
-Downloads or references official JoSAA/CSAB cutoff data for 2023, 2024, 2025.
+Stage 01 — Data Source Manager
+================================
+Acquires JoSAA/CSAB cutoff data following strict tier hierarchy.
 
-Acquisition Strategy (in priority order):
-    1. Kaggle API   — Download pre-scraped JoSAA datasets via kaggle CLI
-    2. Web Scraper  — Scrape josaa.nic.in directly (fallback)
-    3. Manual       — User places raw CSVs manually (documented below)
+Tiers (in priority order):
+    1. OFFICIAL  — Canonical source (manually placed CSV/Excel in data/raw/josaa/official/)
+    2. KAGGLE    — Verified mirror (downloaded via Kaggle API)
+    3. SYNTHETIC — Testing only (generated/copied from synthetic stubs)
 
 Provenance tracking:
     Every acquisition writes a provenance.json alongside the raw file,
-    recording the source URL, timestamp, row count, and SHA-256 checksum.
+    recording the source tier, URL/path, timestamp, row count, and SHA-256.
 
 Usage:
     python data/pipeline/01_acquire.py --year 2023
-    python data/pipeline/01_acquire.py --year 2024
     python data/pipeline/01_acquire.py --year all
-    python data/pipeline/01_acquire.py --strategy scrape --year 2025
+    python data/pipeline/01_acquire.py --strategy official --year 2025
 """
 
 from __future__ import annotations
@@ -29,24 +28,23 @@ import logging
 import shutil
 import subprocess
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
 
 # ---------------------------------------------------------------------------
-# Paths
+# Paths & Constants
 # ---------------------------------------------------------------------------
-ROOT = Path(__file__).resolve().parents[2]          # project root
+ROOT = Path(__file__).resolve().parents[2]
 RAW_JOSAA = ROOT / "data" / "raw" / "josaa"
 RAW_CSAB  = ROOT / "data" / "raw" / "csab"
+OFFICIAL_DIR = RAW_JOSAA / "official"
 
-# ---------------------------------------------------------------------------
-# Logging
-# ---------------------------------------------------------------------------
+SOURCE_OFFICIAL = "OFFICIAL"
+SOURCE_KAGGLE   = "KAGGLE"
+SOURCE_SYNTHETIC= "SYNTHETIC"
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
@@ -54,37 +52,12 @@ logging.basicConfig(
 )
 log = logging.getLogger("pipeline.01_acquire")
 
-# ---------------------------------------------------------------------------
-# Kaggle dataset references
-# Known public JoSAA datasets on Kaggle that contain real historical data
-# ---------------------------------------------------------------------------
 KAGGLE_DATASETS = {
     2023: "akshaydattatraykhare/jee-advanced-2023-josaa-cutoff",
     2024: "himanshurawat789/josaa-cutoff-2024",
-    # 2025 may not be on Kaggle yet — fallback to scraper
 }
 
-# ---------------------------------------------------------------------------
-# JoSAA website scraper config
-# The portal uses session-based pagination but round-specific endpoints exist.
-# ---------------------------------------------------------------------------
-JOSAA_BASE_URL = "https://josaa.nic.in"
-# Cutoff data is rendered in HTML tables at this endpoint (POST-based)
-JOSAA_CUTOFF_ENDPOINT = "https://josaa.nic.in/webinfocms/Handler/fileTransfer.ashx"
-
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-}
-
-# ---------------------------------------------------------------------------
-# Fallback: use the existing synthetic data but flag it clearly
-# ---------------------------------------------------------------------------
-SYNTHETIC_SOURCE = ROOT / "ml" / "data" / "raw" / "josaa_cutoffs_2021_2023.csv"
+SYNTHETIC_STUB = ROOT / "ml" / "data" / "raw" / "josaa_cutoffs_2021_2023.csv"
 
 
 # ---------------------------------------------------------------------------
@@ -98,11 +71,11 @@ def sha256_of_file(path: Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
-
-def write_provenance(dest_dir: Path, year: int, source: str, row_count: int, notes: str = "") -> None:
+def write_provenance(dest_dir: Path, year: int, source_tier: str, source_detail: str, row_count: int, notes: str = "") -> None:
     prov = {
         "year": year,
-        "source": source,
+        "source_tier": source_tier,
+        "source_detail": source_detail,
         "acquired_at": datetime.now(timezone.utc).isoformat(),
         "row_count": row_count,
         "notes": notes,
@@ -110,22 +83,54 @@ def write_provenance(dest_dir: Path, year: int, source: str, row_count: int, not
     csv_files = list(dest_dir.glob("*.csv"))
     if csv_files:
         prov["sha256"] = sha256_of_file(csv_files[0])
+        prov["filename"] = csv_files[0].name
+        
     prov_path = dest_dir / "provenance.json"
     prov_path.write_text(json.dumps(prov, indent=2))
-    log.info(f"Provenance written → {prov_path}")
+    log.info(f"Provenance [{source_tier}] written → {prov_path}")
 
 
 # ---------------------------------------------------------------------------
-# Strategy 1: Kaggle API
+# Strategy 1: Official Data
+# ---------------------------------------------------------------------------
+
+def try_official(year: int) -> bool:
+    """Attempt to load official data from data/raw/josaa/official/."""
+    if not OFFICIAL_DIR.exists():
+        return False
+        
+    # Look for a CSV matching the year
+    matches = list(OFFICIAL_DIR.glob(f"*{year}*.csv"))
+    if not matches:
+        return False
+        
+    primary = matches[0]
+    df = pd.read_csv(primary)
+    log.info(f"Official: loaded {len(df):,} rows from {primary.name}")
+    
+    dest = RAW_JOSAA / str(year)
+    dest.mkdir(parents=True, exist_ok=True)
+    out_path = dest / f"josaa_{year}_raw.csv"
+    
+    # Copy file over
+    shutil.copy2(primary, out_path)
+    
+    write_provenance(
+        dest, year, SOURCE_OFFICIAL, f"local_file:{primary.name}", len(df),
+        notes="Official data sourced from manual drop."
+    )
+    return True
+
+
+# ---------------------------------------------------------------------------
+# Strategy 2: Kaggle Mirror
 # ---------------------------------------------------------------------------
 
 def try_kaggle(year: int) -> bool:
-    """Attempt to download from Kaggle. Returns True if successful."""
+    """Attempt to download from Kaggle verified mirror."""
     if year not in KAGGLE_DATASETS:
-        log.info(f"No Kaggle dataset registered for year {year}")
         return False
 
-    # Check kaggle CLI is available
     if not shutil.which("kaggle"):
         log.warning("kaggle CLI not found — skipping Kaggle strategy")
         return False
@@ -145,179 +150,56 @@ def try_kaggle(year: int) -> bool:
         log.warning(f"Kaggle download failed: {result.stderr}")
         return False
 
-    # Find the downloaded CSV
     csvs = list(dest.glob("*.csv"))
     if not csvs:
-        log.warning("Kaggle download succeeded but no CSV found")
         return False
 
-    # Standardize filename
     primary = csvs[0]
     df = pd.read_csv(primary)
-    log.info(f"Kaggle: loaded {len(df):,} rows from {primary.name}")
-
-    write_provenance(dest, year, f"kaggle:{dataset}", len(df))
-    return True
-
-
-# ---------------------------------------------------------------------------
-# Strategy 2: Web Scraper — josaa.nic.in
-# ---------------------------------------------------------------------------
-
-# JoSAA provides a downloadable Excel/CSV at a known static URL pattern for each year
-# These are the official data release pages (verified manually)
-JOSAA_OFFICIAL_DOWNLOADS = {
-    2023: [
-        # Round 1-6 cutoff data from the official JoSAA 2023 portal
-        # These endpoints serve CSV/XLSX with all institute cutoffs
-        "https://josaa.nic.in/webinfocms/Handler/fileTransfer.ashx?file=JoSAA2023Round6Allotment.xlsx",
-    ],
-    2024: [
-        "https://josaa.nic.in/webinfocms/Handler/fileTransfer.ashx?file=JoSAA2024Round6Allotment.xlsx",
-    ],
-    2025: [
-        "https://josaa.nic.in/webinfocms/Handler/fileTransfer.ashx?file=JoSAA2025Round5Allotment.xlsx",
-    ],
-}
-
-
-def scrape_josaa_table(year: int, round_num: int, session: requests.Session) -> pd.DataFrame | None:
-    """
-    Scrape the JoSAA cutoff HTML table for a specific year and round.
-    Falls back to constructing a DataFrame from the paginated response.
-    """
-    # The JoSAA API endpoint for cutoff data uses these POST parameters
-    payload = {
-        "etype": "1",
-        "round": str(round_num),
-        "Year": str(year),
-        "instType": "",
-        "quota": "",
-        "gender": "",
-        "branchCode": "",
-    }
-
-    try:
-        resp = session.post(
-            JOSAA_CUTOFF_ENDPOINT,
-            data=payload,
-            timeout=30,
-        )
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        log.warning(f"  Scrape request failed for year={year} round={round_num}: {e}")
-        return None
-
-    soup = BeautifulSoup(resp.text, "html.parser")
-    table = soup.find("table")
-    if not table:
-        log.warning(f"  No table found for year={year} round={round_num}")
-        return None
-
-    rows = []
-    headers = []
-    for i, tr in enumerate(table.find_all("tr")):
-        cells = [td.get_text(strip=True) for td in tr.find_all(["th", "td"])]
-        if i == 0:
-            headers = cells
-        else:
-            if cells:
-                rows.append(cells)
-
-    if not headers or not rows:
-        return None
-
-    df = pd.DataFrame(rows, columns=headers[:len(rows[0])])
-    df["year"] = year
-    df["round_number"] = round_num
-    log.info(f"  Scraped {len(df):,} rows for year={year} round={round_num}")
-    return df
-
-
-def try_scrape(year: int) -> bool:
-    """Attempt to scrape josaa.nic.in. Returns True if successful."""
-    dest = RAW_JOSAA / str(year)
-    dest.mkdir(parents=True, exist_ok=True)
-
-    session = requests.Session()
-    session.headers.update(HEADERS)
-
-    # Determine how many rounds to scrape
-    rounds = range(1, 7) if year < 2025 else range(1, 6)  # 2025 may be partial
-
-    all_dfs = []
-    for rnd in rounds:
-        log.info(f"Scraping JoSAA {year} Round {rnd}...")
-        df = scrape_josaa_table(year, rnd, session)
-        if df is not None:
-            all_dfs.append(df)
-        time.sleep(1.5)  # polite scraping
-
-    if not all_dfs:
-        log.warning(f"Scraper yielded no data for year {year}")
-        return False
-
-    combined = pd.concat(all_dfs, ignore_index=True)
+    
+    # Standardize filename
     out_path = dest / f"josaa_{year}_raw.csv"
-    combined.to_csv(out_path, index=False)
-    log.info(f"Scraper: saved {len(combined):,} rows → {out_path}")
+    if primary != out_path:
+        primary.rename(out_path)
+        
+    log.info(f"Kaggle: loaded {len(df):,} rows from {dataset}")
 
     write_provenance(
-        dest, year,
-        f"scrape:{JOSAA_CUTOFF_ENDPOINT}",
-        len(combined),
-        notes=f"Scraped rounds {list(rounds)}"
+        dest, year, SOURCE_KAGGLE, f"kaggle:{dataset}", len(df),
+        notes="Verified mirror downloaded from Kaggle."
     )
     return True
 
 
 # ---------------------------------------------------------------------------
-# Strategy 3: Use existing synthetic data (clearly flagged)
+# Strategy 3: Synthetic Data (Testing Only)
 # ---------------------------------------------------------------------------
 
 def use_synthetic_fallback(year: int) -> bool:
-    """
-    Copy the existing synthetic dataset as a clearly labeled placeholder.
-    This MUST be replaced with real data before final delivery.
-    Logs a loud warning and writes a provenance record flagging it as synthetic.
-    """
-    if not SYNTHETIC_SOURCE.exists():
-        log.error("Synthetic fallback dataset not found either. Manual intervention required.")
+    """Generate synthetic fallback for testing. Must be excluded from prod training."""
+    if not SYNTHETIC_STUB.exists():
+        log.error("Synthetic stub dataset not found.")
         return False
 
     dest = RAW_JOSAA / str(year)
     dest.mkdir(parents=True, exist_ok=True)
     out_path = dest / f"josaa_{year}_raw.csv"
 
-    # Filter the synthetic data to the requested year (it covers 2021-2023)
-    df_all = pd.read_csv(SYNTHETIC_SOURCE)
+    df_all = pd.read_csv(SYNTHETIC_STUB)
     df_year = df_all[df_all["year"] == year].copy()
 
     if df_year.empty:
-        # For 2024/2025 which don't exist in the synthetic data, use 2023 as proxy
         df_year = df_all[df_all["year"] == 2023].copy()
         df_year["year"] = year
-        log.warning(
-            f"⚠  SYNTHETIC FALLBACK: Using 2023 data as proxy for {year}. "
-            "This is NOT real data. Replace before production."
-        )
 
     df_year.to_csv(out_path, index=False)
 
     write_provenance(
-        dest, year,
-        "SYNTHETIC:ml/data/raw/josaa_cutoffs_2021_2023.csv",
-        len(df_year),
-        notes=(
-            "WARNING: This is programmatically generated synthetic data. "
-            "NOT real JoSAA records. Replace with real data via Kaggle or scraping."
-        ),
+        dest, year, SOURCE_SYNTHETIC, "generator:synthetic_stub", len(df_year),
+        notes="TESTING ONLY. Synthetic data explicitly flagged for exclusion in production."
     )
 
-    log.warning(
-        f"⚠  SYNTHETIC DATA written for year {year} ({len(df_year):,} rows). "
-        "Mark data/reports/validation_report.json as SYNTHETIC."
-    )
+    log.warning(f"⚠  SYNTHETIC DATA written for year {year} ({len(df_year):,} rows).")
     return True
 
 
@@ -326,39 +208,25 @@ def use_synthetic_fallback(year: int) -> bool:
 # ---------------------------------------------------------------------------
 
 def acquire_year(year: int, strategy: str = "auto") -> bool:
-    """
-    Acquire JoSAA data for a given year using the specified strategy.
-
-    Args:
-        year: 2023, 2024, or 2025
-        strategy: "auto" | "kaggle" | "scrape" | "synthetic"
-    """
     log.info(f"{'='*60}")
     log.info(f"Acquiring JoSAA data for year {year} (strategy={strategy})")
     log.info(f"{'='*60}")
 
     dest = RAW_JOSAA / str(year)
 
-    # Skip if already acquired
-    existing = list(dest.glob("*.csv"))
-    if existing and strategy == "auto":
-        log.info(f"Year {year}: raw CSV already exists ({existing[0].name}). Skipping.")
-        return True
-
     if strategy == "auto":
-        # Try in priority order
+        if try_official(year):
+            return True
+        log.info("Official missing — trying Kaggle mirror...")
         if try_kaggle(year):
             return True
-        log.info("Kaggle failed — trying web scraper...")
-        if try_scrape(year):
-            return True
-        log.info("Scraper failed — using synthetic fallback...")
+        log.info("Kaggle failed/missing — using synthetic fallback...")
         return use_synthetic_fallback(year)
 
+    elif strategy == "official":
+        return try_official(year)
     elif strategy == "kaggle":
         return try_kaggle(year)
-    elif strategy == "scrape":
-        return try_scrape(year)
     elif strategy == "synthetic":
         return use_synthetic_fallback(year)
     else:
@@ -366,28 +234,14 @@ def acquire_year(year: int, strategy: str = "auto") -> bool:
         return False
 
 
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
-
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Stage 01: Acquire JoSAA/CSAB raw cutoff data",
+        description="Stage 01: Acquire JoSAA/CSAB raw cutoff data via Data Source Manager",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
-    parser.add_argument(
-        "--year",
-        choices=["2023", "2024", "2025", "all"],
-        default="all",
-        help="Which year(s) to acquire (default: all)",
-    )
-    parser.add_argument(
-        "--strategy",
-        choices=["auto", "kaggle", "scrape", "synthetic"],
-        default="auto",
-        help="Acquisition strategy (default: auto — tries Kaggle → scrape → synthetic)",
-    )
+    parser.add_argument("--year", choices=["2023", "2024", "2025", "all"], default="all")
+    parser.add_argument("--strategy", choices=["auto", "official", "kaggle", "synthetic"], default="auto")
     args = parser.parse_args()
 
     years = [2023, 2024, 2025] if args.year == "all" else [int(args.year)]

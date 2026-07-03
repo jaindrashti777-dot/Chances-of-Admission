@@ -6,12 +6,12 @@ __pycache__/
 coverage/
 htmlcov/
 *.log
-*.db
+# *.db removed so chances.db is tracked for deployment
 .pytest_cache/
 dist/
 .env
 
-ml/artifacts/*.joblib
+# ml/artifacts/*.joblib removed so models are tracked for deployment
 ml/data/processed/*.csv
 ml/data/raw/*.csv
 ml/reports/metrics/*.json

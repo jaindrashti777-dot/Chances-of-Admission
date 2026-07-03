@@ -70,12 +70,12 @@ def assign_institute_tier(nirf_rank) -> str:
         return "Tier 4"  # unranked institutes go to Tier 4
 
 
-def is_synthetic_year(year: int) -> bool:
+def get_year_source(year: int) -> str:
     prov_path = ROOT / "data" / "raw" / "josaa" / str(year) / "provenance.json"
     if prov_path.exists():
         prov = json.loads(prov_path.read_text())
-        return "SYNTHETIC" in prov.get("source", "")
-    return False
+        return prov.get("source_tier", "UNKNOWN")
+    return "UNKNOWN"
 
 
 def load_years(include_synthetic: bool) -> pd.DataFrame:
@@ -86,14 +86,14 @@ def load_years(include_synthetic: bool) -> pd.DataFrame:
             log.warning(f"Year {year}: processed file not found — skipping")
             continue
 
-        synthetic = is_synthetic_year(year)
-        if synthetic and not include_synthetic:
+        source_tier = get_year_source(year)
+        if source_tier == "SYNTHETIC" and not include_synthetic:
             log.warning(f"Year {year}: data is SYNTHETIC — skipping (use --include-synthetic to include)")
             continue
 
         df = pd.read_csv(path)
-        df["data_source"] = "SYNTHETIC" if synthetic else "REAL"
-        log.info(f"  Loaded {year}: {len(df):,} rows {'[SYNTHETIC]' if synthetic else '[REAL]'}")
+        df["data_source"] = source_tier
+        log.info(f"  Loaded {year}: {len(df):,} rows [{source_tier}]")
         dfs.append(df)
 
     if not dfs:

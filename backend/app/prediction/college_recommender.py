@@ -18,9 +18,14 @@ class CollegeRecommender:
         """
         safe, target, dream = [], [], []
         
-        # Simplified query: fetch cutoffs for the latest year matching user category/quota
-        # In a real scenario, this would aggregate or use the ML model in batch offline.
+        # We query for cutoffs for the latest available year (e.g., 2023)
         from backend.app.models.cutoff import Category, Quota
+        
+        # Fetch colleges where the user rank is within a reasonable range
+        # user_rank * 0.8 => closing rank needed is at least 0.8x user rank (Dream)
+        # user_rank * 3.0 => closing rank is up to 3x user rank (Very Safe)
+        min_closing_rank = user_rank * 0.75
+        max_closing_rank = user_rank * 3.0
         
         stmt = select(HistoricalCutoff, College, Branch).join(College).join(Branch)\
             .join(Category, HistoricalCutoff.category_id == Category.id)\
@@ -28,8 +33,11 @@ class CollegeRecommender:
             .where(
                 Category.name == category_name,
                 Quota.name == quota_name,
-                HistoricalCutoff.year == 2023 # Using previous year as heuristic
-        ).limit(50)
+                HistoricalCutoff.year == 2023,
+                HistoricalCutoff.round_number == 6, # Use last round
+                HistoricalCutoff.closing_rank >= min_closing_rank,
+                HistoricalCutoff.closing_rank <= max_closing_rank
+        )
         
         results = db.execute(stmt).all()
         
@@ -46,19 +54,20 @@ class CollegeRecommender:
                 match_type=""
             )
             
-            if user_rank <= closing_rank * 0.8:
+            # Categorize based on proximity to closing rank
+            if user_rank <= closing_rank * 0.85:
                 rec.match_type = "Safe"
                 safe.append(rec)
             elif user_rank <= closing_rank * 1.05:
                 rec.match_type = "Target"
                 target.append(rec)
-            elif user_rank <= closing_rank * 1.2:
+            elif user_rank <= closing_rank * 1.25:
                 rec.match_type = "Dream"
                 dream.append(rec)
                 
         # Sort and limit
         safe = sorted(safe, key=lambda x: x.predicted_closing_rank)[:5]
-        target = sorted(target, key=lambda x: x.predicted_closing_rank)[:5]
+        target = sorted(target, key=lambda x: abs(x.predicted_closing_rank - user_rank))[:5] # Closest targets
         dream = sorted(dream, key=lambda x: x.predicted_closing_rank, reverse=True)[:5]
         
         return RecommendationResponse(
@@ -82,12 +91,12 @@ class CollegeRecommender:
                 College.name == college_name,
                 Branch.name == branch_name,
                 Category.name == category_name,
-                Quota.name == quota_name
+                Quota.name == quota_name,
+                HistoricalCutoff.round_number == 6 # Trend based on final round
             ).order_by(HistoricalCutoff.year.asc())
             
         results = db.execute(stmt).all()
         
-        # Deduplicate by year (take the last round / minimum rank typically, but we'll just take the first match per year here for simplicity)
         seen_years = set()
         trend_data = []
         for year, closing_rank in results:
@@ -104,3 +113,4 @@ class CollegeRecommender:
         )
 
 college_recommender = CollegeRecommender()
+

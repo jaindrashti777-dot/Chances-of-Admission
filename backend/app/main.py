@@ -10,8 +10,31 @@ from backend.app.prediction.model_registry import model_manager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Load the Machine Learning model
+    # Startup 1: Load ML model artifact
     model_manager.load_model()
+
+    # Startup 2: ETL — populate DB from historical CSV if needed
+    try:
+        from backend.app.db.session import SessionLocal
+        from backend.app.db.etl import run_etl
+        import logging
+        etl_logger = logging.getLogger("etl_startup")
+
+        db = SessionLocal()
+        try:
+            from backend.app.models.cutoff import HistoricalCutoff
+            existing = db.query(HistoricalCutoff).count()
+            if existing == 0:
+                etl_logger.info("Database is empty — running ETL pipeline …")
+                run_etl(db)
+            else:
+                etl_logger.info(f"Database already has {existing:,} cutoff rows — skipping ETL.")
+        finally:
+            db.close()
+    except Exception as exc:
+        import logging
+        logging.getLogger("etl_startup").error(f"ETL startup failed: {exc}", exc_info=True)
+
     yield
     # Shutdown logic (if any)
 

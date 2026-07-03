@@ -1,0 +1,29 @@
+{
+    "total_records": 236224,
+    "unique_colleges": 112,
+    "unique_branches": 12,
+    "years": [
+        2021,
+        2022,
+        2023
+    ],
+    "categories_distribution": {
+        "EWS": 52472,
+        "OBC-NCL": 52469,
+        "SC": 52468,
+        "OPEN": 52459,
+        "ST": 26356
+    },
+    "quotas_distribution": {
+        "OS": 109521,
+        "HS": 109520,
+        "AI": 17183
+    },
+    "rank_percentiles": {
+        "25th": 41856.0,
+        "50th": 94877.0,
+        "75th": 100000.0,
+        "90th": 100000.0,
+        "max": 100000.0
+    }
+}
