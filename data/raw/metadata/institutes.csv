@@ -1,0 +1,70 @@
+institute_name,institute_type,counselling_body,state,city,established,nirf_rank_2024,naac_grade,website,autonomous
+NIT Tiruchirappalli,NIT,JoSAA,Tamil Nadu,Tiruchirappalli,1964,9,A++,https://www.nitt.edu,Yes
+NIT Warangal,NIT,JoSAA,Telangana,Warangal,1959,18,A++,https://www.nitw.ac.in,Yes
+NIT Surathkal,NIT,JoSAA,Karnataka,Surathkal,1960,27,A+,https://www.nitk.ac.in,Yes
+NIT Rourkela,NIT,JoSAA,Odisha,Rourkela,1961,22,A++,https://www.nitrkl.ac.in,Yes
+NIT Calicut,NIT,JoSAA,Kerala,Calicut,1961,28,A++,https://www.nitc.ac.in,Yes
+MNNIT Allahabad,NIT,JoSAA,Uttar Pradesh,Prayagraj,1961,45,A+,https://www.mnnit.ac.in,Yes
+MNIT Jaipur,NIT,JoSAA,Rajasthan,Jaipur,1963,50,A+,https://www.mnit.ac.in,Yes
+VNIT Nagpur,NIT,JoSAA,Maharashtra,Nagpur,1960,54,A+,https://www.vnit.ac.in,Yes
+NIT Kurukshetra,NIT,JoSAA,Haryana,Kurukshetra,1963,62,A+,https://www.nitkkr.ac.in,Yes
+NIT Durgapur,NIT,JoSAA,West Bengal,Durgapur,1960,67,A,https://www.nitdgp.ac.in,Yes
+MANIT Bhopal,NIT,JoSAA,Madhya Pradesh,Bhopal,1960,70,A,https://www.manit.ac.in,Yes
+NIT Patna,NIT,JoSAA,Bihar,Patna,1886,85,A,https://www.nitp.ac.in,Yes
+SVNIT Surat,NIT,JoSAA,Gujarat,Surat,1961,75,A+,https://www.svnit.ac.in,Yes
+NIT Jamshedpur,NIT,JoSAA,Jharkhand,Jamshedpur,1960,80,A,https://www.nitjsr.ac.in,Yes
+NIT Raipur,NIT,JoSAA,Chhattisgarh,Raipur,1956,92,A,https://www.nitrr.ac.in,Yes
+NIT Silchar,NIT,JoSAA,Assam,Silchar,1967,98,A,https://www.nits.ac.in,Yes
+NIT Delhi,NIT,JoSAA,Delhi,New Delhi,2010,88,A,https://www.nitdelhi.ac.in,Yes
+NIT Goa,NIT,JoSAA,Goa,Farmagudi,2010,105,B++,https://www.nitgoa.ac.in,Yes
+NIT Hamirpur,NIT,JoSAA,Himachal Pradesh,Hamirpur,1986,110,A,https://www.nith.ac.in,Yes
+NIT Uttarakhand,NIT,JoSAA,Uttarakhand,Srinagar,2009,120,B+,https://www.nituk.ac.in,Yes
+NIT Srinagar,NIT,JoSAA,Jammu and Kashmir,Srinagar,1960,115,B+,https://www.nitsri.ac.in,Yes
+NIT Agartala,NIT,JoSAA,Tripura,Agartala,1965,125,B+,https://www.nita.ac.in,Yes
+NIT Puducherry,NIT,JoSAA,Puducherry,Karaikal,2009,135,B+,https://www.nitpy.ac.in,Yes
+NIT Andhra Pradesh,NIT,JoSAA,Andhra Pradesh,Tadepalligudem,2015,140,B,https://www.nitandhra.ac.in,Yes
+NIT Sikkim,NIT,JoSAA,Sikkim,Ravangla,2009,150,B,https://www.nitsikkim.ac.in,Yes
+NIT Arunachal Pradesh,NIT,JoSAA,Arunachal Pradesh,Yupia,2010,160,B,https://www.nitap.ac.in,Yes
+NIT Manipur,NIT,JoSAA,Manipur,Imphal,2010,165,B,https://www.nitmanipur.ac.in,Yes
+NIT Meghalaya,NIT,JoSAA,Meghalaya,Shillong,2010,170,B,https://www.nitm.ac.in,Yes
+NIT Mizoram,NIT,JoSAA,Mizoram,Aizawl,2010,175,B,https://www.nitmz.ac.in,Yes
+NIT Nagaland,NIT,JoSAA,Nagaland,Dimapur,2010,180,B,https://www.nitnagaland.ac.in,Yes
+NIT Andaman and Nicobar,NIT,JoSAA,Andaman and Nicobar,Port Blair,2010,185,B,https://www.nitan.ac.in,Yes
+IIIT Hyderabad,IIIT,JoSAA,Telangana,Hyderabad,1998,6,A++,https://www.iiit.ac.in,Yes
+IIIT Allahabad,IIIT,JoSAA,Uttar Pradesh,Prayagraj,1999,52,A+,https://www.iiita.ac.in,Yes
+ABV-IIITM Gwalior,IIIT,JoSAA,Madhya Pradesh,Gwalior,1997,60,A,https://www.iiitm.ac.in,Yes
+IIITDM Jabalpur,IIIT,JoSAA,Madhya Pradesh,Jabalpur,2005,72,A,https://www.iiitdmj.ac.in,Yes
+IIITDM Kancheepuram,IIIT,JoSAA,Tamil Nadu,Chennai,2007,78,A,https://www.iiitdm.ac.in,Yes
+IIIT Kurnool,IIIT,JoSAA,Andhra Pradesh,Kurnool,2015,130,B+,https://www.iiitkurnool.ac.in,Yes
+IIIT Sri City,IIIT,JoSAA,Andhra Pradesh,Chittoor,2013,125,B+,https://www.iiits.ac.in,Yes
+IIIT Vadodara,IIIT,JoSAA,Gujarat,Vadodara,2013,132,B+,https://www.iiitvadodara.ac.in,Yes
+IIIT Lucknow,IIIT,JoSAA,Uttar Pradesh,Lucknow,2015,138,B+,https://www.iiitl.ac.in,Yes
+IIIT Dharwad,IIIT,JoSAA,Karnataka,Dharwad,2015,142,B+,https://www.iiitdwd.ac.in,Yes
+IIIT Kalyani,IIIT,JoSAA,West Bengal,Kalyani,2014,148,B,https://www.iiitklyani.ac.in,Yes
+IIIT Una,IIIT,JoSAA,Himachal Pradesh,Una,2014,155,B,https://www.iiitu.ac.in,Yes
+IIIT Ranchi,IIIT,JoSAA,Jharkhand,Ranchi,2016,160,B,https://www.iiitranchi.ac.in,Yes
+IIIT Pune,IIIT,JoSAA,Maharashtra,Pune,2016,162,B,https://www.iiitp.ac.in,Yes
+IIIT Nagpur,IIIT,JoSAA,Maharashtra,Nagpur,2016,165,B,https://www.iiitn.ac.in,Yes
+IIIT Bhagalpur,IIIT,JoSAA,Bihar,Bhagalpur,2017,170,B,https://www.iiitbh.ac.in,Yes
+IIIT Bhopal,IIIT,JoSAA,Madhya Pradesh,Bhopal,2017,172,B,https://www.iiitbhopal.ac.in,Yes
+IIIT Srirangam,IIIT,JoSAA,Tamil Nadu,Tiruchirappalli,2015,175,B,https://www.iiitr.ac.in,Yes
+IIIT Kota,IIIT,JoSAA,Rajasthan,Kota,2013,178,B,https://www.iiitkota.ac.in,Yes
+IIIT Surat,IIIT,JoSAA,Gujarat,Surat,2017,180,B,https://www.iiitsurat.ac.in,Yes
+IIIT Sonepat,IIIT,JoSAA,Haryana,Sonepat,2019,185,B,https://www.iiitsonepat.ac.in,Yes
+IIIT Manipur,IIIT,JoSAA,Manipur,Imphal,2015,188,B,https://www.iiitmanipur.ac.in,Yes
+IIIT Agartala,IIIT,JoSAA,Tripura,Agartala,2015,190,B,https://www.iiitagartala.ac.in,Yes
+IIIT Raichur,IIIT,JoSAA,Karnataka,Raichur,2019,192,B,https://www.iiitraichur.ac.in,Yes
+IIIT Naya Raipur,IIIT,JoSAA,Chhattisgarh,Raipur,2019,195,B,https://www.iiitnr.ac.in,Yes
+IIIT Vadodara ICD,IIIT,JoSAA,Gujarat,Vadodara,2017,198,B,https://www.iiitvadodara.ac.in,Yes
+IIEST Shibpur,GFTI,JoSAA,West Bengal,Howrah,1856,55,A,https://www.iiest.ac.in,Yes
+BIT Mesra,GFTI,JoSAA,Jharkhand,Ranchi,1955,82,A,https://www.bitmesra.ac.in,Yes
+Tezpur University,GFTI,JoSAA,Assam,Tezpur,1994,100,A+,https://www.tezu.ernet.in,Yes
+SLIET Longowal,GFTI,JoSAA,Punjab,Longowal,1989,112,A,https://www.sliet.ac.in,Yes
+Jamia Millia Islamia,GFTI,JoSAA,Delhi,New Delhi,1920,68,A++,https://www.jmi.ac.in,Yes
+Aligarh Muslim University,GFTI,JoSAA,Uttar Pradesh,Aligarh,1875,35,A++,https://www.amu.ac.in,Yes
+Madan Mohan Malaviya University of Technology,GFTI,JoSAA,Uttar Pradesh,Gorakhpur,1962,118,A,https://www.mmmut.ac.in,Yes
+Guru Ghasidas Vishwavidyalaya,GFTI,JoSAA,Chhattisgarh,Bilaspur,1983,145,B+,https://www.ggu.ac.in,Yes
+Banaras Hindu University,GFTI,JoSAA,Uttar Pradesh,Varanasi,1916,16,A++,https://www.bhu.ac.in,Yes
+School of Planning and Architecture,GFTI,JoSAA,Delhi,New Delhi,1941,,,https://www.spa.ac.in,Yes
+Delhi Technological University,GFTI,JoSAA,Delhi,New Delhi,1941,36,A+,https://www.dtu.ac.in,Yes
+Netaji Subhas University of Technology,GFTI,JoSAA,Delhi,New Delhi,1983,65,A,https://www.nsut.ac.in,Yes

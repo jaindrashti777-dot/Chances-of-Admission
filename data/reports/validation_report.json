@@ -1,0 +1,105 @@
+{
+  "generated_at": "2026-07-03T19:59:22.116814+00:00",
+  "years": {
+    "2023": {
+      "year": 2023,
+      "total_rows": 78408,
+      "is_synthetic": true,
+      "status": "PASS",
+      "critical_count": 0,
+      "warning_count": 1,
+      "passed_count": 14,
+      "critical_rules": [],
+      "warning_rules": [
+        {
+          "rule": "W1: institute_name in metadata",
+          "failing_rows": 44,
+          "detail": "Not in metadata (need to add): ['Amrita Vishwa Vidyapeetham', 'Andhra University', 'Army Institute of Technology', 'Assam University', 'BIT Sindri']"
+        }
+      ],
+      "passed_rules": [
+        "R1: institute_name not null",
+        "R2: branch_name not null",
+        "R3: opening_rank < closing_rank",
+        "R4: ranks are positive",
+        "R5: closing_rank within JEE range",
+        "R6: year in valid set",
+        "R7: round_number in {1..6}",
+        "R8: category in canonical set",
+        "R9: quota in {HS,OS,AI}",
+        "R10: seat_pool in valid set",
+        "W2: all branch names in metadata",
+        "W3: no unusually high closing ranks",
+        "W4: no duplicate records",
+        "W5: all 5 base categories present"
+      ]
+    },
+    "2024": {
+      "year": 2024,
+      "total_rows": 78408,
+      "is_synthetic": true,
+      "status": "PASS",
+      "critical_count": 0,
+      "warning_count": 1,
+      "passed_count": 14,
+      "critical_rules": [],
+      "warning_rules": [
+        {
+          "rule": "W1: institute_name in metadata",
+          "failing_rows": 44,
+          "detail": "Not in metadata (need to add): ['Amrita Vishwa Vidyapeetham', 'Andhra University', 'Army Institute of Technology', 'Assam University', 'BIT Sindri']"
+        }
+      ],
+      "passed_rules": [
+        "R1: institute_name not null",
+        "R2: branch_name not null",
+        "R3: opening_rank < closing_rank",
+        "R4: ranks are positive",
+        "R5: closing_rank within JEE range",
+        "R6: year in valid set",
+        "R7: round_number in {1..6}",
+        "R8: category in canonical set",
+        "R9: quota in {HS,OS,AI}",
+        "R10: seat_pool in valid set",
+        "W2: all branch names in metadata",
+        "W3: no unusually high closing ranks",
+        "W4: no duplicate records",
+        "W5: all 5 base categories present"
+      ]
+    },
+    "2025": {
+      "year": 2025,
+      "total_rows": 78408,
+      "is_synthetic": true,
+      "status": "PASS",
+      "critical_count": 0,
+      "warning_count": 1,
+      "passed_count": 14,
+      "critical_rules": [],
+      "warning_rules": [
+        {
+          "rule": "W1: institute_name in metadata",
+          "failing_rows": 44,
+          "detail": "Not in metadata (need to add): ['Amrita Vishwa Vidyapeetham', 'Andhra University', 'Army Institute of Technology', 'Assam University', 'BIT Sindri']"
+        }
+      ],
+      "passed_rules": [
+        "R1: institute_name not null",
+        "R2: branch_name not null",
+        "R3: opening_rank < closing_rank",
+        "R4: ranks are positive",
+        "R5: closing_rank within JEE range",
+        "R6: year in valid set",
+        "R7: round_number in {1..6}",
+        "R8: category in canonical set",
+        "R9: quota in {HS,OS,AI}",
+        "R10: seat_pool in valid set",
+        "W2: all branch names in metadata",
+        "W3: no unusually high closing ranks",
+        "W4: no duplicate records",
+        "W5: all 5 base categories present"
+      ]
+    }
+  },
+  "overall_status": "PASS"
+}

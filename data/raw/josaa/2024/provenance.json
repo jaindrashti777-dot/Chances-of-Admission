@@ -1,0 +1,8 @@
+{
+  "year": 2024,
+  "source": "SYNTHETIC:ml/data/raw/josaa_cutoffs_2021_2023.csv",
+  "acquired_at": "2026-07-03T19:59:17.094518+00:00",
+  "row_count": 78408,
+  "notes": "WARNING: This is programmatically generated synthetic data. NOT real JoSAA records. Replace with real data via Kaggle or scraping.",
+  "sha256": "963038c5c23f9a29d4ebacd10c14d1dfd243e4e3dd632d0370a0f6f4fdc5fecc"
+}

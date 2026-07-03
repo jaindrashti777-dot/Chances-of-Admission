@@ -1,0 +1,31 @@
+branch_name,branch_code,degree,duration_years,department,core_or_emerging,available_at
+Computer Science and Engineering,CSE,B.Tech,4,Computer Science,Core,"NIT,IIIT,GFTI,IIT"
+Electronics and Communication Engineering,ECE,B.Tech,4,Electronics,Core,"NIT,IIIT,GFTI,IIT"
+Information Technology,IT,B.Tech,4,Computer Science,Core,"NIT,IIIT,GFTI"
+Electrical Engineering,EE,B.Tech,4,Electrical,Core,"NIT,GFTI,IIT"
+Mechanical Engineering,ME,B.Tech,4,Mechanical,Core,"NIT,GFTI,IIT"
+Civil Engineering,CE,B.Tech,4,Civil,Core,"NIT,GFTI,IIT"
+Chemical Engineering,CHE,B.Tech,4,Chemical,Core,"NIT,GFTI,IIT"
+Data Science and Artificial Intelligence,DSAI,B.Tech,4,Computer Science,Emerging,"NIT,IIIT,GFTI"
+Artificial Intelligence and Machine Learning,AIML,B.Tech,4,Computer Science,Emerging,"IIIT,GFTI"
+Computer Science and Engineering (Artificial Intelligence),CSE-AI,B.Tech,4,Computer Science,Emerging,"NIT,IIIT"
+Electronics and Instrumentation Engineering,EIE,B.Tech,4,Electronics,Core,"NIT,GFTI"
+Instrumentation and Control Engineering,ICE,B.Tech,4,Electronics,Core,"NIT,GFTI"
+Metallurgical and Materials Engineering,MME,B.Tech,4,Metallurgy,Core,"NIT,IIT"
+Production and Industrial Engineering,PIE,B.Tech,4,Mechanical,Core,"NIT,GFTI"
+Mining Engineering,MINE,B.Tech,4,Mining,Core,"NIT,IIT"
+Biotechnology,BT,B.Tech,4,Life Sciences,Core,"NIT,GFTI"
+Architecture,ARCH,B.Arch,5,Architecture,Core,"NIT,GFTI"
+Planning,PLAN,B.Plan,4,Architecture,Core,GFTI
+Mathematics and Computing,MAC,B.Tech,4,Mathematics,Emerging,"NIT,IIT"
+Engineering Physics,EP,B.Tech,4,Physics,Core,"NIT,IIT"
+Electronics and Computer Engineering,ECO,B.Tech,4,Electronics,Emerging,"NIT,IIIT"
+Computer Science and Engineering (Cyber Security),CSE-CS,B.Tech,4,Computer Science,Emerging,"NIT,IIIT"
+Internet of Things,IOT,B.Tech,4,Computer Science,Emerging,"IIIT,GFTI"
+Smart Manufacturing,SM,B.Tech,4,Mechanical,Emerging,GFTI
+Textile Technology,TT,B.Tech,4,Textile,Core,GFTI
+Leather Technology,LT,B.Tech,4,Leather,Core,GFTI
+Ceramic Engineering,CER,B.Tech,4,Materials,Core,GFTI
+Electrical and Electronics Engineering,EEE,B.Tech,4,Electrical,Core,"NIT,GFTI"
+Computer Science and Business Systems,CSBS,B.Tech,4,Computer Science,Emerging,GFTI
+Mechanical Engineering (Mechatronics),MECH-MT,B.Tech,4,Mechanical,Emerging,GFTI
