@@ -1,8 +1,11 @@
 import logging
 import sys
 import json
+import contextvars
 from datetime import datetime
 from backend.app.core.config import settings
+
+request_id_contextvar = contextvars.ContextVar("request_id", default="N/A")
 
 class JSONFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
@@ -13,9 +16,8 @@ class JSONFormatter(logging.Formatter):
             "module": record.module,
             "funcName": record.funcName,
             "lineNo": record.lineno,
+            "request_id": request_id_contextvar.get()
         }
-        if hasattr(record, "request_id"):
-            log_data["request_id"] = record.request_id
             
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
@@ -24,8 +26,7 @@ class JSONFormatter(logging.Formatter):
 
 class RequestIdFilter(logging.Filter):
     def filter(self, record):
-        if not hasattr(record, "request_id"):
-            record.request_id = "N/A"
+        record.request_id = request_id_contextvar.get()
         return True
 
 def setup_logging():

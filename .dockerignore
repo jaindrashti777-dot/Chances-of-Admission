@@ -1,0 +1,23 @@
+.git
+.gitignore
+.github
+node_modules
+frontend
+dist
+__pycache__
+.pytest_cache
+venv
+.env
+*.log
+
+# Exclude large datasets not needed for inference
+data/
+ml/data/
+notebooks/
+
+# Keep only necessary ML artifacts
+!ml/artifacts/best_model.joblib
+!ml/artifacts/shap_explainer.joblib
+
+docs/
+project-docs/
